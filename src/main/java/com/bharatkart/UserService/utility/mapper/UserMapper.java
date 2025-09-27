@@ -1,7 +1,7 @@
 package com.bharatkart.UserService.utility.mapper;
 
-import com.bharatkart.UserService.model.dto.UserRequestDto;
 import com.bharatkart.UserService.model.dto.UserResponseDto;
+import com.bharatkart.UserService.model.dto.UserSignUpRequestDto;
 import com.bharatkart.UserService.model.entity.Users;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
@@ -13,8 +13,10 @@ import org.mapstruct.ReportingPolicy;
 public interface UserMapper {
 
     // Request DTO -> Entity
-    Users toEntity(UserRequestDto dto);
+    Users toEntity(UserSignUpRequestDto dto);
 
     // Entity -> Response DTO
     UserResponseDto toDto(Users users);
+
+    UserResponseDto userResponseToDto(Users users);
 }
