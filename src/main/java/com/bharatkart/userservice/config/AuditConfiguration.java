@@ -1,4 +1,4 @@
-package com.bharatkart.UserService.config;
+package com.bharatkart.userservice.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

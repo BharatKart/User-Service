@@ -1,4 +1,4 @@
-package com.bharatkart.UserService.model.entity;
+package com.bharatkart.userservice.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;

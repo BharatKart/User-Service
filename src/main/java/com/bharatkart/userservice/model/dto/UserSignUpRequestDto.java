@@ -1,15 +1,14 @@
-package com.bharatkart.UserService.model.dto;
+package com.bharatkart.userservice.model.dto;
 
 
-import com.bharatkart.UserService.model.entity.Users;
-import jakarta.validation.constraints.Email;
+import com.bharatkart.userservice.model.entity.Users;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class UserRequestDto {
+public class UserSignUpRequestDto {
 
     @NotBlank(message = "Username is required")
     private String username;

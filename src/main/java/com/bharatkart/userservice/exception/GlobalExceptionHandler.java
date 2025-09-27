@@ -1,16 +1,16 @@
-package com.bharatkart.UserService.exception;
+package com.bharatkart.userservice.exception;
 
-import com.bharatkart.UserService.utility.ApiResponse;
+import com.bharatkart.userservice.utility.ApiResponse;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.http.ResponseEntity;
+
 import java.util.Arrays;
 
 @RestControllerAdvice
@@ -85,4 +85,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(response);
     }
 
-}
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ApiResponse<Void>> handleBadCredentials(BadCredentialsException ex) {
+        ApiResponse<Void> response = ApiResponse.<Void>builder()
+                .code(401)
+                .status(ApiResponse.Status.ERROR)
+                .message(ex.getMessage())
+                .build();
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+
+    }
+    }

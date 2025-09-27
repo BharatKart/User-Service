@@ -1,4 +1,4 @@
-package com.bharatkart.UserService.utility;
+package com.bharatkart.userservice.utility;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,4 +1,4 @@
-package com.bharatkart.UserService.exception;
+package com.bharatkart.userservice.exception;
 
 public class UserAlreadyExistsException extends RuntimeException {
     public UserAlreadyExistsException(String message) {

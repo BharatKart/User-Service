@@ -1,6 +1,6 @@
-package com.bharatkart.UserService.Repository;
+package com.bharatkart.userservice.Repository;
 
-import com.bharatkart.UserService.model.entity.Users;
+import com.bharatkart.userservice.model.entity.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,4 +1,4 @@
-package com.bharatkart.UserService.model.dto;
+package com.bharatkart.userservice.model.dto;
 
 import lombok.Builder;
 import lombok.Data;

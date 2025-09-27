@@ -1,4 +1,4 @@
-package com.bharatkart.UserService;
+package com.bharatkart.userservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
