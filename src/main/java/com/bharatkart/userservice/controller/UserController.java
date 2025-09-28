@@ -1,9 +1,6 @@
 package com.bharatkart.userservice.controller;
 
-import com.bharatkart.userservice.model.dto.UserLoginRequestDto;
-import com.bharatkart.userservice.model.dto.UserResponseDto;
-import com.bharatkart.userservice.model.dto.UserSignUpRequestDto;
-import com.bharatkart.userservice.model.dto.UserUpdateRequestDto;
+import com.bharatkart.userservice.model.dto.*;
 import com.bharatkart.userservice.service.UserService;
 import com.bharatkart.userservice.utility.ApiResponse;
 import jakarta.validation.Valid;
@@ -44,5 +41,17 @@ public class UserController {
     public ApiResponse<String> deActivateUser(Authentication authentication){
         return userService.deActivateUser(authentication.getName());
     }
+
+    @PostMapping("/forgotPassword")
+    public ApiResponse<String> forgotPassword(@RequestParam String userName){
+        return userService.forgotPassword(userName);
+    }
+
+
+    @PostMapping("/resetPassword")
+    public ApiResponse<String> resetPassword(@Valid @RequestBody ResetPasswordRequestDto resetPasswordRequestDto){
+        return userService.resetPassword(resetPasswordRequestDto);
+    }
+
 
 }

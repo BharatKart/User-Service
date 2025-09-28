@@ -1,16 +1,16 @@
 package com.bharatkart.userservice.service;
 
+import com.bharatkart.userservice.Repository.PasswordResetTokenRepository;
 import com.bharatkart.userservice.Repository.UsersRepository;
 import com.bharatkart.userservice.exception.UserNotFoundException;
-import com.bharatkart.userservice.model.dto.UserLoginRequestDto;
-import com.bharatkart.userservice.model.dto.UserResponseDto;
-import com.bharatkart.userservice.model.dto.UserSignUpRequestDto;
-import com.bharatkart.userservice.model.dto.UserUpdateRequestDto;
+import com.bharatkart.userservice.model.dto.*;
+import com.bharatkart.userservice.model.entity.PasswordResetToken;
 import com.bharatkart.userservice.model.entity.Users;
 import com.bharatkart.userservice.exception.UserAlreadyExistsException;
 import com.bharatkart.userservice.utility.ApiResponse;
 import com.bharatkart.userservice.utility.Constants;
 import com.bharatkart.userservice.utility.JwtUtil;
+import com.bharatkart.userservice.utility.OTP;
 import com.bharatkart.userservice.utility.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -19,6 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 @Service
 @Slf4j
@@ -32,6 +34,10 @@ public class UserServiceImpl implements UserService{
     private final PasswordEncoder passwordEncoder;
 
     private final JwtUtil jwtUtil;
+
+    private final OTP otp;
+
+    private final PasswordResetTokenRepository passwordResetTokenRepository;
 
     @Override
     @Transactional
@@ -127,7 +133,50 @@ public class UserServiceImpl implements UserService{
                 .build();
     }
 
+    @Override
+    public ApiResponse<String> forgotPassword(String userName) {
+        Users user= usersRepository.findByUsername(userName).orElseThrow(()-> new UsernameNotFoundException(Constants.USER_NOT_FOUND));
+        String generateOTP=otp.generateOTP();
 
+        log.info("Generated OTP for {}: {}", user.getUsername(), generateOTP);
+        PasswordResetToken passwordResetToken=new PasswordResetToken();
+        passwordResetToken.setUsername(user.getUsername());
+        passwordResetToken.setOtp(generateOTP);
+        passwordResetToken.setExpiryTime(LocalDateTime.now().plusMinutes(Constants.OTP_TIME_EXPIRY_TIME));
+        passwordResetToken.setUsed(false);
+        passwordResetTokenRepository.save(passwordResetToken);
+
+        return ApiResponse.<String>builder()
+                .code(200)
+                .status(ApiResponse.Status.SUCCESS)
+                .message("OTP Sent Successfully ")
+                .data(generateOTP)
+                .build();
+
+    }
+
+    @Override
+    public ApiResponse<String> resetPassword(ResetPasswordRequestDto resetPasswordRequestDto) {
+       PasswordResetToken passwordResetToken= passwordResetTokenRepository.findByUsernameAndOtpAndUsedFalse(resetPasswordRequestDto.getUsername(),resetPasswordRequestDto.getOtp()).orElseThrow(()->new RuntimeException("Invalid or Expired OTP"));
+
+       if(passwordResetToken.getExpiryTime().isBefore(LocalDateTime.now())){
+           throw new RuntimeException("OTP has Expired");
+       }
+        Users user= usersRepository.findByUsername(resetPasswordRequestDto.getUsername()).orElseThrow(()-> new UsernameNotFoundException(Constants.USER_NOT_FOUND));
+
+       user.setPassword(passwordEncoder.encode(resetPasswordRequestDto.getNewPassword()));
+       usersRepository.save(user);
+
+       passwordResetToken.setUsed(true);
+       passwordResetTokenRepository.save(passwordResetToken);
+
+        return ApiResponse.<String>builder()
+                .code(200)
+                .status(ApiResponse.Status.SUCCESS)
+                .message("Password reset successfully")
+                .build();
+
+    }
 
 
 }
